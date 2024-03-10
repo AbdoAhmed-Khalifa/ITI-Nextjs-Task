@@ -3,11 +3,29 @@
 import { Button, Card } from 'flowbite-react';
 import { useRouter } from 'next/router';
 
-export default function MovieCard({ movie }) {
+export default function MovieCard({ movie, isFav, update }) {
   const router = useRouter();
   function handleClick(id) {
     router.push(`/home/${id}`);
   }
+
+  const addToFav = async FavMovie => {
+    const response = await fetch('/api/favourite', {
+      method: 'POST',
+      body: JSON.stringify(FavMovie),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  };
+
+  const removeFromFav = async id => {
+    const response = await fetch(`/api/favourite/${id}`, {
+      method: 'DELETE',
+    });
+    const data = await response.json();
+    update();
+  };
   return (
     <Card
       className="max-w-sm"
@@ -35,6 +53,15 @@ export default function MovieCard({ movie }) {
           />
         </svg>
       </Button>
+      {isFav ? (
+        <Button color="red" onClick={() => removeFromFav(movie.id)}>
+          Remove from Favourite
+        </Button>
+      ) : (
+        <Button color="green" onClick={() => addToFav(movie)}>
+          Add to Favourite
+        </Button>
+      )}
     </Card>
   );
 }

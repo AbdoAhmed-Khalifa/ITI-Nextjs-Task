@@ -1,6 +1,5 @@
 import { Card } from 'flowbite-react';
-import { useRouter } from 'next/router';
-import Login from '../login';
+
 
 export default function Params({ movie }) {
   return (

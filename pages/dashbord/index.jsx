@@ -1,9 +1,14 @@
+import { getSession, signIn } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
 function Dashbord() {
   const [movies, setMovies] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     async function getAllMovie() {
+      const session = await getSession();
+      if (!session) signIn();
+      else setIsLoading(false);
       const response = await fetch(
         'https://api.themoviedb.org/3/movie/popular?api_key=aa6fc65fcedb7431af3ac2fbe6484cd0&language=en-US&page=1'
       );
@@ -25,7 +30,7 @@ function Dashbord() {
     return mov.popularity > acc.popularity ? mov : acc;
   }, movies[0]);
 
-  if (!movies) return <div>Loading...</div>;
+  if (!movies || isLoading) return <div>Loading...</div>;
   else
     return (
       <div className=" w-full">
